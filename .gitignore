@@ -80,6 +80,14 @@ documents/postings/**
 documents/interview/**
 !documents/**/.gitkeep
 
+# Raw experience material and the source-of-truth files built from it. These carry
+# former-employer internals - work-item and PR numbers, branch names, release IDs,
+# colleagues' names - alongside the candidate's own unpolished account. A GitHub fork
+# of this template is always public, so none of it may ever be tracked.
+experience_raw/
+experience/
+jobs_raw.md
+
 # Personal job search tracking
 job_search_tracker.csv
 
