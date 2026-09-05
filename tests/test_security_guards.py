@@ -331,7 +331,10 @@ class GitignorePatternBehaviorTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(result.returncode, 0, f"{path}: not ignored by the shipped .gitignore")
-        self.assertIn("documents/applications/**", result.stdout)
+        # documents/** is deny-by-default (Task 1): every documents/ subfolder is
+        # ignored unless explicitly re-included, so the matching pattern is the
+        # blanket rule rather than a per-folder one.
+        self.assertIn("documents/**", result.stdout)
 
 
 class GitignoreNegationTests(GuardRepoFixture):

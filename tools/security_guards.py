@@ -74,15 +74,10 @@ REQUIRED_IGNORE_RULES = [
     "cover_letters/cover_*.*",
     # /apply also recognizes the uppercase Cover_* naming variant.
     "cover_letters/Cover_*.*",
-    "documents/cv/**",
-    "documents/linkedin/**",
-    "documents/diplomas/**",
-    "documents/references/**",
-    "documents/applications/**",
-    "documents/postings/**",
-    # Belt-and-braces, not the primary guard: nothing writes here.
-    # /interview's prep packs land under documents/applications/**, above.
-    "documents/interview/**",
+    # Deny-by-default: every documents/ subfolder is personal unless re-included
+    # below. Replaces a per-folder list that silently exposed any new folder
+    # (documents/outreach/ went untracked-but-unignored for weeks before this).
+    "documents/**",
     "job_search_tracker.csv",
     "gmail_sync/",
     "reports/",
@@ -116,6 +111,8 @@ ALLOWED_IGNORE_NEGATIONS = {
     "!cover_letters/OpenFonts/fonts/**",
     "!cv/main_example.tex",
     "!cover_letters/cover_example.tex",
+    "!documents/README.md",
+    "!documents/*/",
     "!documents/**/.gitkeep",
 }
 
