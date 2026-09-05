@@ -204,7 +204,26 @@ Once the reviewer agent returns its feedback:
    Use Edit for targeted changes; only re-read a file if an edit fails because the surrounding text has shifted.
 3. Do NOT incorporate any suggestion that would fabricate skills or experience. If a posting requirement is a genuine gap, acknowledge it honestly and frame adjacent experience instead.
 
-After all edits are applied, the two files on disk are the final drafts.
+After all edits are applied, the two files on disk are the current drafts. They are not final until Step 4b.
+
+---
+
+## Step 4b: SKEPTIC - Cut Before You Compile (MANDATORY)
+
+Dispatch the **`application-skeptic`** agent via the Agent tool, passing both revised drafts and the posting **inline**, exactly as you did for the reviewer. It has no web tools and reads only the drafts plus the style and behavioral guides, so it is cheap and fast.
+
+**Run it here, after Step 4, not in parallel with Step 3.** The material it is best at catching is created *by* Step 4: the reviewer's job is coverage, so applying its feedback reliably makes the draft longer, more duplicated, and more pleased with itself. On a real application, Step 3 returned roughly +90 words and proposed no removals at all, and two weak passages then survived into a draft the candidate had to fix by hand. This step is the counterweight, and skipping it puts that work back on the candidate.
+
+It returns four sections: what a reader would not believe, what reads as boasting, which metrics are noise, and a ranked list of at least three cuts.
+
+**How to act on it:**
+- **Duplicated claims, noise metrics, and register failures: just cut them.** These are not judgment calls. `03-writing-style.md` rules 7 and 8 already ban volume metrics and editorialised difficulty outright.
+- **A "move, don't cut" finding is usually the highest-value one.** The strongest evidence buried in a trailing subordinate clause should be promoted to its own sentence rather than deleted.
+- **A "would not believe" finding is a scoping problem, not a deletion.** Tighten the claim to what the evidence supports; do not drop the achievement.
+- **Never delete an honestly-stated gap or boundary** because the skeptic called the paragraph weak. If the placement is wrong, move it and pair it with what the candidate *has* done. Deleting it is a grounding failure and it makes every adjacent claim less credible.
+- Ignore anything under "Not my job, but:" unless it is obviously right and free.
+
+Cutting here also buys page budget, which is why this runs before the compile rather than after it.
 
 ---
 
