@@ -12,7 +12,8 @@ Check `$ARGUMENTS` for a scope keyword:
 
 - `profile` — clears candidate profile data from skill files only
 - `documents` — deletes user-provided files from the `documents/` folder only
-- `all` — both of the above
+- `experience` — deletes user-added role files from the `experience/` folder and restores its router
+- `all` — all three of the above
 
 If `$ARGUMENTS` is empty or does not contain a recognized scope keyword, ask:
 
@@ -22,9 +23,11 @@ If `$ARGUMENTS` is empty or does not contain a recognized scope keyword, ask:
 >
 > - **`documents`** — Deletes all files you've placed in the `documents/` folder (CV PDFs, LinkedIn export, diplomas, references, pasted job postings, past applications). The folder structure and `README.md` are preserved.
 >
-> - **`all`** — Both of the above.
+> - **`experience`** — Deletes any role files you've added to `experience/` and restores `INDEX.md`'s router to its placeholder rows. `README.md` and `00-example-role.md` (the layer's own documentation and worked example) are preserved — they never hold personal data. This is a separate scope from `profile` because `/setup` does not generate these files and cannot regenerate them either: unlike the skill files, clearing this scope is not something you'd casually re-run before `/setup`.
 >
-> Reply with `profile`, `documents`, or `all`.
+> - **`all`** — All three of the above.
+>
+> Reply with `profile`, `documents`, `experience`, or `all`.
 
 Wait for the user's response before continuing.
 
@@ -77,8 +80,11 @@ The following files are NOT touched (they contain framework rules, not candidate
   - 03-writing-style.md
   - 06-cover-letter-templates.md
 
-Outside the profile scope, still holding your personal data: CLAUDE.md and
-cv/main_example.tex. This scope covers skill files only.
+Outside the profile scope, still holding your personal data: CLAUDE.md, cv/main_example.tex, and
+experience/ (if you have populated it). experience/ is the most sensitive of the three - it holds
+the unsummarised, unpolished account of your work history (see experience/README.md), not the
+curated, CV-ready text the other files hold. Clear CLAUDE.md and cv/main_example.tex by hand;
+clear experience/ with `/reset experience`. This scope covers skill files only.
 ```
 
 ### If scope includes `documents`:
@@ -110,6 +116,30 @@ documents/README.md — NOT deleted (instructions file)
 ```
 
 If all document subfolders are already empty, state "All document subfolders are already empty — nothing to delete." and skip the confirmation step for this scope.
+
+### If scope includes `experience`:
+
+Use Glob to list all `experience/*.md` files, then exclude `README.md` and `00-example-role.md` from
+the list — those two never hold personal data and are never touched by this scope. Check whether the
+remaining `INDEX.md` still matches the placeholder shipped with the template (the file starts
+`# Experience index — router` and its `## The files` table rows are still `[BRACKETED]`) or has been
+edited with real routing content. Present as:
+
+```
+## Experience reset will clear:
+
+- INDEX.md — [placeholder, nothing to clear / has real routing content]
+  Router rows will be restored to the shipped placeholder.
+
+- [any other experience/*.md file found, e.g. 01-<employer>-<role>.md] — will be deleted
+
+experience/README.md and experience/00-example-role.md — NOT touched (the layer's own
+documentation and worked example; they never hold personal data).
+```
+
+If the only files present are `README.md`, `INDEX.md` (still the placeholder), and
+`00-example-role.md`, state "experience/ has no role files and INDEX.md is still the shipped
+placeholder — nothing to clear." and skip the confirmation step for this scope.
 
 ---
 
@@ -245,6 +275,75 @@ rm -f documents/postings/*
 rm -rf documents/applications/*/
 ```
 
+### Experience reset
+
+Delete every file Step 1 found in `experience/` other than `README.md`, `INDEX.md`, and
+`00-example-role.md` — these are real role files, so delete each one with Bash `rm`
+(`rm -f experience/<filename>` per file, or one `rm -f` call listing all of them).
+
+If Step 1 found `INDEX.md` no longer matching the shipped placeholder, replace its **entire content**
+with:
+
+```markdown
+# Experience index — router
+
+`/apply` Step 2 reads this file, matches the posting's requirement list against the table below, and
+then reads **only the one or two experience files that match**. Reading the whole folder defeats the
+purpose: these files are deliberately unsummarised, and a model given all of them writes vaguer
+bullets than one given the right subset.
+
+> **This file ships as a placeholder.** It has no real role files behind it yet, and `/setup` does
+> not generate them. Write `experience/NN-<employer>-<role>.md` files by hand using the skeleton in
+> `experience/README.md`, then replace every `[BRACKETED]` row below with your own. `/recall`
+> (`.claude/commands/recall.md`) keeps the *files themselves* in sync as facts come in, but it does
+> not update this router — add or adjust a row here yourself whenever a new file appears or a file's
+> scope changes, or a posting will fail to find it.
+
+## The files
+
+| File | Role | Period | Weight |
+|---|---|---|---|
+| `01-[employer]-[role-slug].md` | [JOB_TITLE_1] | [YEAR_START] – [YEAR_END] | [Why a drafter should default here — e.g. largest role by scope or duration] |
+| `02-[employer]-[role-slug].md` | [JOB_TITLE_2] | [YEAR_START] – [YEAR_END] | [What this file is the best or only source for] |
+| `03-[employer]-[role-slug].md` | [JOB_TITLE_3] | [YEAR_START] – [YEAR_END] | [What this file is the best or only source for] |
+
+---
+
+## Keyword router
+
+Match on the posting's own terms. Where two files are listed, the first leads and the second
+supports.
+
+| If the posting asks for… | Read | Go straight to |
+|---|---|---|
+| [PRIMARY_SKILL_OR_STACK] | `01` | §[N] |
+| [SECONDARY_SKILL] | `02`, `01` | `02` §[N] ([what it is evidence of]), `01` §[N] ([supporting detail]) |
+| **[A CAPABILITY YOU LACK DIRECT EXPERIENCE IN]** | `0N` | **Start at `01-candidate-profile.md` → "[the section documenting how you acquire unfamiliar tools/frameworks]"**, then the file and section with the nearest genuine adjacency. Demonstrate the sequence honestly, never assert "fast learner", and never phrase it as "whatever the job required" |
+| [DOMAIN_OR_INDUSTRY] | `0N`, `0M` | Both — name what each file uniquely supports |
+| **[A THEME WORTH CALLING OUT EXPLICITLY]** | `0N` | §[N]. [One line on why this is a standout theme in the profile] |
+| **[SOMETHING YOU DID ADJACENT TO BUT DID NOT OWN]** | `0N` | §[N]. **Always include the honest boundary:** [what you did not do, stated plainly] |
+
+Add a row per capability, tool, or theme a posting is likely to ask about — one row is cheap; a
+missing one means `/apply` reads the wrong file or skips the folder's best evidence entirely.
+
+---
+
+## Rules that apply to every read
+
+1. **Provenance tags bind.** `[evidence]` and `[attested]` may be used. **`[to-confirm]` may not
+   reach a CV or cover letter** — surface it to the user instead.
+2. **`Do NOT say` sections bind.** Every file opens with one. Those are retired exaggerations still
+   present in LinkedIn and older CVs; reintroducing one is a grounding failure.
+3. **Depth ratings bind.** DEEP / WORKING / EXPOSURE. An EXPOSURE technology is never presented as
+   owned.
+4. **Honest boundaries are assets, not liabilities.** A file that states plainly what you did *not*
+   do — the layer you didn't own, the system you extended rather than built — makes everything
+   adjacent to that boundary more credible. Say those boundaries out loud where a posting touches
+   them, rather than treating them as things to omit.
+```
+
+`README.md` and `00-example-role.md` are never modified by this scope.
+
 ---
 
 ## Step 4: Confirm What Was Done and Next Steps
@@ -266,10 +365,13 @@ Then tell the user what to do next based on what was reset:
 **If profile was reset:**
 > The skill files are now blank. Run `/setup` to repopulate them. The command auto-detects any files in your `documents/` folder and offers to read from there; otherwise it walks you through a CV import or interactive interview.
 >
-> Note that `CLAUDE.md` and `cv/main_example.tex` are outside the `profile` scope and still hold your personal data. If you are handing this fork over or making it public, clear them by hand.
+> Note that `CLAUDE.md`, `cv/main_example.tex`, and `experience/` are outside the `profile` scope and still hold your personal data. `experience/` is the most sensitive of the three - it holds the unsummarised, unpolished account of your work history, not curated CV-ready text. `/setup` does not regenerate any of these, so if you are handing this fork over or making it public: clear `CLAUDE.md` and `cv/main_example.tex` by hand, and run `/reset experience` for the rest.
 
 **If documents were reset:**
 > The `documents/` folder is now empty. Add your career documents and run `/setup` to populate your profile. See `documents/README.md` for instructions on what to put where.
 
-**If both were reset:**
-> Both your profile files and documents folder are now empty. Add documents to `documents/` (or skip and use the CV import / interview path), then run `/setup`.
+**If experience was reset:**
+> Any role files you had added are gone and `INDEX.md` is back to its shipped placeholder. `/setup` cannot regenerate these - write new role files by hand from the skeleton in `experience/README.md`, or add facts to them over time with `/recall` as they come up.
+
+**If more than one scope was reset (including `all`):**
+> Everything above applies to the scopes you reset. Run `/setup` next for `profile` or `documents`; for `experience`, write role files by hand (or via `/recall`) whenever you are ready - there is no command that generates them.

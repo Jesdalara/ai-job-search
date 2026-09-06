@@ -141,6 +141,10 @@ Wait for confirmation. Then apply with the Edit tool — **targeted edits only, 
 State what changed, per file. If the fact was left out of the summary layer, say so and why — the user
 should know the difference between "recorded in depth" and "will show up on a CV".
 
+**If this turn created a brand-new role file** (Step 1's "no file yet" case), remind the user now to
+add a row for it to `experience/INDEX.md` — this command never touches the router itself, so a new
+file with no matching row is invisible to `/apply` Step 2 until one is added.
+
 If the fact is `[to-confirm]`, close by naming what would confirm it. That is usually a document the
 user already has.
 

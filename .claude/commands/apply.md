@@ -90,7 +90,7 @@ That second test is the one that does the work. **People remember tools accurate
 
 ### How to run it
 
-1. **Search before asking.** For each qualifying gap, grep `01-candidate-profile.md` for adjacent vocabulary. A "gap" is sometimes already recorded and was simply missed. Searching is free; asking costs the user's attention.
+1. **Search before asking.** For each qualifying gap, grep `01-candidate-profile.md` for adjacent vocabulary — and grep `experience/` too when it holds real role files beyond the shipped placeholder and example, since the deeper, unsummarised detail is the more likely home for a previously-recorded capability. A "gap" is sometimes already recorded and was simply missed. Searching is free; asking costs the user's attention.
 2. **Ask in plain language, never in the posting's vocabulary.** "Do you have experience with idempotent message delivery?" invites a yes and teaches the answer. Ask instead: *"If the same reminder could have gone out twice by accident, did the system ever have to notice and stop that? Did you build any of that?"* The candidate should be able to answer without knowing what the posting called it.
 3. **Always ask the boundary question: did you build it, or build inside it?** This single question is what keeps the source of truth clean. On that recall it separated three claims into their honest halves — a digest-retry rule built against an existing job-scheduling service rather than the scheduler itself designed, and a delivery-dedup check tuned within a fixed retry framework rather than the framework built from scratch.
 4. Use `AskUserQuestion` so the boundary options are explicit and the user can pick the accurate one rather than composing prose.

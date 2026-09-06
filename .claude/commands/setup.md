@@ -409,10 +409,17 @@ Present a summary:
 > private), so do not push these commits to a fork. Keep them local, or push to a private
 > repository instead - see SETUP.md section 8 for the private-remote setup.
 >
+> **One thing this didn't generate:** `experience/` - a place for the full, unsummarised account of
+> each role (see `experience/README.md`). Nothing above writes to it; role files are written by hand
+> from the skeleton there, or added over time with `/recall`. `/apply` reads it automatically once it
+> has content, and drafts fine from the profile alone if you skip this for now.
+>
 > **Try it out:**
 > - Run `/scrape` to search for matching jobs right now
 > - Run `/apply` with a job posting URL to see the full application workflow
 > - Run `/setup --section search` later to update your search queries as your priorities evolve
+> - Write a role file in `experience/` (see `experience/README.md`) when you want `/apply` to draw on
+>   more than the two-page summary
 
 If Path A left any STAR stubs in `07-interview-prep.md`, also note:
 
