@@ -4,11 +4,13 @@ You are orchestrating a two-agent job application workflow. The job posting is p
 
 Follow these steps **exactly in order**. Do not skip steps.
 
-**Standing rule — write new facts back to the profile.** If the user confirms, corrects or supplies a fact that is not already in `01-candidate-profile.md` — a metric, a project detail, a skill, a scope correction — update that file in the same turn. Do not leave it living only in the conversation or in a draft.
+**Standing rule — write new facts back to the sources.** If the user confirms, corrects or supplies a fact that is not already recorded — a metric, a project detail, a skill, a scope correction — write it in the same turn. Do not leave it living only in the conversation or in a draft.
+
+**Where it goes:** detail about a specific role goes into the relevant `experience/` file, placed in the right section and carrying a provenance tag (`[attested]` is the honest default for something the user just said). It goes *additionally* to `01-candidate-profile.md` only when it is summary-grade — a new role, title, date, certification, language, headline metric, or a genuinely new skill. Do not paste role detail into the profile summary, and do not append a fact to the end of an experience file: placement is what keeps these files worth reading. If the fact resolves an item in that file's §Open questions, delete the item in the same turn; if it reveals that an older CV or LinkedIn claim is wrong, add a row to the file's §0 `Do NOT say` table. **`/recall` implements this procedure in full** — follow `.claude/commands/recall.md` if the fact is substantial or touches something already recorded.
 
 This is not bookkeeping. A fact that exists only in chat **will be treated as unsupported by a later session and stripped from drafts as a fabrication.** Anything absent from the sources does not exist as far as future drafting is concerned, and the loss is silent — a real achievement quietly disappears from every subsequent CV.
 
-This rule is the input side of the Step 3 Factual Grounding Audit, not a competitor to it. The audit is deliberately strict: an ungrounded claim is removed, and it cannot tell a fabrication from a real fact the user stated out loud last week. That strictness is correct, and it is exactly why confirmed facts have to reach the sources in the same turn they surface. Write to `01-candidate-profile.md` specifically — it is one of the audit's three sources, so a fact recorded there is grounded on the next run. Adding a fact to `01` that `CLAUDE.md` and the master CV simply do not mention is an absence, not a contradiction, and does not trip the audit's profile-consistency warning; if the new fact *corrects* something either of those states, fix it there too rather than leaving the two sources disagreeing.
+This rule is the input side of the Step 3 Factual Grounding Audit, not a competitor to it. The audit is deliberately strict: an ungrounded claim is removed, and it cannot tell a fabrication from a real fact the user stated out loud last week. That strictness is correct, and it is exactly why confirmed facts have to reach the sources in the same turn they surface. Write to `01-candidate-profile.md` specifically — it is one of the audit's four sources, so a fact recorded there is grounded on the next run. Adding a fact to `01` that `CLAUDE.md` and the master CV simply do not mention is an absence, not a contradiction, and does not trip the audit's profile-consistency warning; if the new fact *corrects* something either of those states, fix it there too rather than leaving the two sources disagreeing.
 
 **Token-efficiency rules for this workflow:**
 - Never re-Read a file whose contents are already in your context from an earlier step. If you read it in Step 1, it is still available in Step 2.
@@ -118,11 +120,18 @@ Read only the reference files you do not yet have:
 
 **Resolve the active template (do this once, reuse everywhere below):** if `05-cv-templates.md` or `06-cover-letter-templates.md` opens with an `ACTIVE-TEMPLATE` managed block (inserted by `/add-template`), read its declared **source extension** and **compile command** — these override the stock `.tex`/lualatex (CV) and `.tex`/xelatex (cover letter) defaults for the rest of this workflow. Call these `<CV_EXT>`/`<CV_COMPILE>` and `<COVER_EXT>`/`<COVER_COMPILE>`; where no block is present, they default to `.tex`, the stock lualatex command, and the stock xelatex command respectively. Every `.tex` reference below is really `<CV_EXT>` or `<COVER_EXT>` — stock behavior is unchanged, this only matters when a custom template is active.
 
+**Retrieve the relevant experience detail.** Read `experience/INDEX.md`, then use the requirement list from Step 1 to resolve which one or two `experience/NN-*.md` files cover the experience this posting asks for. **Read only those.** Do not read the whole folder — these files are deliberately unsummarised, and loading all of them dilutes the drafting instead of sharpening it. Three rules govern their use:
+- Every claim carries a provenance tag. `[evidence]` and `[attested]` claims may be used. A **`[to-confirm]`** claim must not reach a CV or cover letter until the user resolves it — surface it to the user instead.
+- Honour each file's **`Do NOT say`** section. Those are retired exaggerations, usually still present in older CVs and LinkedIn; reintroducing one is a grounding failure, not a stylistic choice.
+- Respect the DEEP / WORKING / EXPOSURE depth ratings. An EXPOSURE technology is never presented as owned.
+
+Record which experience files you read — Step 3 passes their paths to the reviewer. If no `experience/` file exists yet beyond the shipped placeholder and example, skip this and draft from `01-candidate-profile.md` alone.
+
 Also read the most recent existing CV and cover letter files for concrete structural reference (one of each is enough):
 - Read any existing `cv/main_*<CV_EXT>` file as a structural reference
 - Read any existing `cover_letters/cover_*<COVER_EXT>` or `cover_letters/Cover_*<COVER_EXT>` file as a structural reference
 
-*The master candidate profile (`01-candidate-profile.md`), the master CV (`cv/main_example.tex`), and CLAUDE.md's Candidate Profile section are the sole source of truth for facts; existing tailored CVs may be read for structure and phrasing only, never as a source of claims.*
+*The master candidate profile (`01-candidate-profile.md`), the experience source-of-truth files under `experience/`, the master CV (`cv/main_example.tex`), and CLAUDE.md's Candidate Profile section are the sole source of truth for facts; existing tailored CVs may be read for structure and phrasing only, never as a source of claims.*
 
 ### Requirement coverage (both documents)
 - **Use the gap list as Step 1b left it, not as Step 1 produced it.** If Step 1b recovered evidence for something Step 1 called a gap, it is no longer a gap and must not be conceded in the cover letter — and it must be written with the boundary Step 1b captured, never inflated to the posting's own term. If Step 1b confirmed a gap, it is now confirmed rather than assumed, which is a stronger position to write from.
@@ -138,7 +147,7 @@ Also read the most recent existing CV and cover letter files for concrete struct
 - Tailor the profile statement and experience bullets to the specific role
 - Reframe skills and achievements to match job requirements
 - Keep to 2 pages
-- **Grounding Audit:** Before writing to disk, audit all tailored bullet points against the union of three sources: `.claude/skills/job-application-assistant/01-candidate-profile.md` + the master CV (`cv/main_example.tex`) + `CLAUDE.md`'s Candidate Profile section to verify that all dates, roles, and metrics match exactly (zero profile drift or fabrication).
+- **Grounding Audit:** Before writing to disk, audit all tailored bullet points against the union of four sources: `.claude/skills/job-application-assistant/01-candidate-profile.md` + the `experience/` files read above + the master CV (`cv/main_example.tex`) + `CLAUDE.md`'s Candidate Profile section to verify that all dates, roles, and metrics match exactly (zero profile drift or fabrication). The `experience/` files are the most detailed of the four and win on specifics; where one contradicts a summary source, the contradiction itself is a finding to report to the user, not something to silently resolve.
 
 ### Cover Letter (`cover_letters/cover_<company>_<role><COVER_EXT>`)
 - **Match the language of the job posting** (Danish posting -> Danish cover letter, English posting -> English cover letter)
@@ -157,7 +166,7 @@ Write both files to disk. Keep the exact text of both drafts in working memory �
 
 Use the **Agent tool** to spawn a `general-purpose` reviewer agent. The reviewer gets a fresh context, so pass the drafts **inline in the prompt** below (do not make the reviewer Read them). Scope the reviewer's file reads to content-critique essentials only — the reviewer does not need the template structure files (`05`, `06`) to critique content, since those govern structural/toolchain concerns the drafter already applied.
 
-Replace `<COMPANY>`, `<ROLE>`, `<INSERT_JOB_POSTING_TEXT_HERE>`, `<INSERT_CV_DRAFT_HERE>`, and `<INSERT_COVER_LETTER_DRAFT_HERE>` with actual values before dispatching.
+Replace `<COMPANY>`, `<ROLE>`, `<EXPERIENCE_FILES_USED>`, `<INSERT_JOB_POSTING_TEXT_HERE>`, `<INSERT_CV_DRAFT_HERE>`, and `<INSERT_COVER_LETTER_DRAFT_HERE>` with actual values before dispatching. `<EXPERIENCE_FILES_USED>` is the list of `experience/` file paths you read in Step 2 — the reviewer cannot ground the draft's specifics without them. When Step 2 read none, write "none".
 
 ```
 You are a hiring manager proxy reviewing a job application. Your job is to make the application as targeted and compelling as possible.
@@ -190,11 +199,12 @@ Read these reference files — and only these — to ground your critique:
 - `.claude/skills/job-application-assistant/04-job-evaluation.md`
 - The master CV baseline template (`cv/main_example.tex`)
 - The workspace root `CLAUDE.md` file (specifically the Candidate Profile section)
+- The experience source-of-truth files the drafter worked from: `<EXPERIENCE_FILES_USED>` (skip if "none"). These are named sources of truth on equal footing with the profile, and they are far more detailed than it — a claim they support is grounded, even when no other source mentions it. Two constraints ride with them: never propose a phrasing that a file's **`Do NOT say`** section retires, and treat any claim tagged **`[to-confirm]`** as ungrounded for CV purposes, however plausible it reads.
 
 Do NOT read `05-cv-templates.md` or `06-cover-letter-templates.md` — those govern template structure the drafter already applied and are not needed for content critique.
 
 ### 3. Factual Grounding Audit
-Compare every date, employer, job title, and quantitative metric in both drafts against the union of three sources: `.claude/skills/job-application-assistant/01-candidate-profile.md` + the master CV baseline template (`cv/main_example.tex`) + `CLAUDE.md`'s Candidate Profile section. A claim is grounded if ANY of these sources supports it. Mismatches between these three sources themselves must be reported to the user as a profile-consistency warning rather than treated as draft drift. Draft mismatches must be flagged as Part A edits with `"reason": "grounding"` so they can be distinguished from style changes. Keep the tolerance honest: reframed emphasis is fine; changed facts and escalated numbers are not.
+Compare every date, employer, job title, and quantitative metric in both drafts against the union of four sources: `.claude/skills/job-application-assistant/01-candidate-profile.md` + the `experience/` files listed above + the master CV baseline template (`cv/main_example.tex`) + `CLAUDE.md`'s Candidate Profile section. A claim is grounded if ANY of these sources supports it. Mismatches between these sources themselves must be reported to the user as a profile-consistency warning rather than treated as draft drift. Draft mismatches must be flagged as Part A edits with `"reason": "grounding"` so they can be distinguished from style changes. Keep the tolerance honest: reframed emphasis is fine; changed facts and escalated numbers are not.
 
 ### 4. Drafts to Review
 Both drafts are provided inline below. Do NOT use the Read tool on the draft files — use these exact texts.
@@ -447,7 +457,7 @@ Check whether the posting or the portal it came from asks for free-text fields t
 
 > "This posting has free-text application fields I can draft too — [name the specific fields, e.g. a self-introduction paragraph and structured project entries]. Want those drafted?"
 
-**Only on yes**, read `08-application-forms.md` and draft the fields per its rules, grounded against the same three-source union as the CV and cover letter. Save per that file's "Output format" section. **On no, or when the posting has no such fields, say nothing further and move on** — this is an optional addition and never changes the default two-document output.
+**Only on yes**, read `08-application-forms.md` and draft the fields per its rules, grounded against the same four-source union as the CV and cover letter. Save per that file's "Output format" section. **On no, or when the posting has no such fields, say nothing further and move on** — this is an optional addition and never changes the default two-document output.
 
 ### Next Steps
 - **Submitted?** `/outcome <company>` moves the `drafted` row to `applied` and starts the per-application record that `/setup` later uses to calibrate the fit framework.

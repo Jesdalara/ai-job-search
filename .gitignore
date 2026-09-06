@@ -76,6 +76,19 @@ documents/**
 !documents/*/
 !documents/**/.gitkeep
 
+# experience/ holds the unsummarised, per-role source-of-truth layer (see
+# experience/README.md) - former-employer internals and the candidate's own unpolished
+# account, populated by /setup and /recall. Same deny-by-default shape as documents/**
+# above: only the template's own README, placeholder router and worked example ship
+# tracked; every real role file a user adds is personal and must never be committed.
+# experience_raw/ (optional raw material behind those files) is denied outright - it
+# has no template content to preserve.
+experience_raw/
+experience/**
+!experience/README.md
+!experience/INDEX.md
+!experience/00-example-role.md
+
 # Personal job search tracking
 job_search_tracker.csv
 

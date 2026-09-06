@@ -78,6 +78,12 @@ REQUIRED_IGNORE_RULES = [
     # below. Replaces a per-folder list that silently exposed any new folder
     # (documents/outreach/ went untracked-but-unignored for weeks before this).
     "documents/**",
+    # Same deny-by-default shape for the experience/ source-of-truth layer (see
+    # experience/README.md): only the template's own README, placeholder router
+    # and worked example ship tracked; every real role file a user adds via
+    # /setup or /recall is personal and must never be committed.
+    "experience_raw/",
+    "experience/**",
     "job_search_tracker.csv",
     "gmail_sync/",
     "reports/",
@@ -114,6 +120,9 @@ ALLOWED_IGNORE_NEGATIONS = {
     "!documents/README.md",
     "!documents/*/",
     "!documents/**/.gitkeep",
+    "!experience/README.md",
+    "!experience/INDEX.md",
+    "!experience/00-example-role.md",
 }
 
 # Hook commands the template legitimately ships, as "<Event>:<command>" strings.

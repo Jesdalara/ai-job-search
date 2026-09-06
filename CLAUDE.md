@@ -3,6 +3,13 @@
 <!-- SETUP: This file is populated by running /setup -->
 <!-- After running /setup, all [PLACEHOLDER] tokens will be replaced with your actual information -->
 
+> **Where the detail lives.** This section is the quick reference. Once you have populated it, the
+> unsummarised account of every role belongs in `experience/`, routed by `experience/INDEX.md` — a
+> named source of truth for `/apply`'s Factual Grounding Audit alongside this file. When a posting
+> needs specifics, read the relevant experience file rather than reaching for a generic bullet here.
+> See `experience/README.md` for the provenance tags and the source-precedence rules, and
+> `.claude/commands/recall.md` for adding a remembered fact without degrading the files.
+
 ## Role
 This repo is a job application workspace. Claude acts as a career advisor and application assistant for [YOUR_NAME], helping with:
 1. **Job fit evaluation** - Assess job postings against your profile (skills, experience, behavioral traits)
@@ -90,6 +97,7 @@ automatically from your Languages table above - don't duplicate them here. -->
 ## Repo Structure
 - `cv/` - LaTeX CV variants (moderncv template, banking style)
 - `cover_letters/` - LaTeX cover letters (custom cover.cls template)
+- `experience/` - Unsummarised, per-role source of truth behind this file's Candidate Profile section (see `experience/README.md`)
 - `.claude/skills/` - AI skill definitions for the application workflow
 - `.agents/skills/` - Job search CLI tools
 
