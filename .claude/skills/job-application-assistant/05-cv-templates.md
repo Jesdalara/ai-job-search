@@ -1,5 +1,5 @@
 ---
-framework_version: 1.4.4
+framework_version: 1.4.5
 ---
 
 # CV Templates and Tailoring Guide
@@ -142,6 +142,10 @@ Write 5-7 lines that function as an "elevator pitch": a concise, compelling intr
 When the role sits outside your home domain, **lead with the domain-transfer argument** - the one or two sentences connecting your background to their problem (e.g. wave physics to radar signal processing) belong in the profile statement's opening, not buried in the cover letter. It is the strongest card a domain-changer holds; play it first.
 
 **Create 2-3 profile statement templates for your main role types:**
+
+These are **starting shapes, not fill-in-the-blank forms.** Once populated, each one still gets its
+specifics pulled from the relevant `experience/` file for the posting at hand (see
+`experience/README.md`) — that is where the detail that makes a statement land actually lives.
 
 <!-- SETUP: These are populated based on your background -->
 **For [YOUR_PRIMARY_ROLE_TYPE] roles:**

@@ -1,11 +1,17 @@
 ---
-framework_version: 1.1.1
+framework_version: 1.1.2
 ---
 
 # Candidate Profile
 
 <!-- SETUP: This file is populated by running /setup -->
 <!-- After running /setup, all sections will be filled with your actual information -->
+
+> **This file is the summary index. Once you have populated `experience/` (see `experience/README.md`),
+> the detail lives there.** Both are sources of truth for `/apply`'s Factual Grounding Audit and must
+> never contradict each other. When a posting needs specifics — a project's real scope, a
+> technology's real depth, a metric's real provenance — read the relevant `experience/` file via
+> `experience/INDEX.md` rather than reaching for a generic bullet here.
 
 ## Identity
 - **Name:** [YOUR_NAME]

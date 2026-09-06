@@ -5,11 +5,12 @@ then reads **only the one or two experience files that match**. Reading the whol
 purpose: these files are deliberately unsummarised, and a model given all of them writes vaguer
 bullets than one given the right subset.
 
-> **This file ships as a placeholder.** It has no real role files behind it yet. Run `/setup`, or
-> write `experience/NN-<employer>-<role>.md` files by hand using the skeleton in `experience/README.md`,
-> then replace every `[BRACKETED]` row below with your own. `/recall` (`.claude/commands/recall.md`)
-> keeps this router in sync afterward — when it resolves a fact to a file with no matching row here,
-> it adds one instead of leaving the fact unreachable.
+> **This file ships as a placeholder.** It has no real role files behind it yet, and `/setup` does
+> not generate them. Write `experience/NN-<employer>-<role>.md` files by hand using the skeleton in
+> `experience/README.md`, then replace every `[BRACKETED]` row below with your own. `/recall`
+> (`.claude/commands/recall.md`) keeps the *files themselves* in sync as facts come in, but it does
+> not update this router — add or adjust a row here yourself whenever a new file appears or a file's
+> scope changes, or a posting will fail to find it.
 
 ## The files
 

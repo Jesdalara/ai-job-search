@@ -1,5 +1,5 @@
 ---
-framework_version: 1.0.0
+framework_version: 1.0.1
 ---
 
 # Interview Preparation Guide
@@ -15,6 +15,11 @@ Keep answers to 1-2 minutes. Be specific. End with what you learned or would do 
 ## Ready-Made STAR Examples
 
 <!-- These are populated by /setup from your actual experience. Below are templates showing the format. -->
+
+> Once you have populated `experience/` (see `experience/README.md`), the full narrative behind each
+> of these lives there, routed by `experience/INDEX.md`. When an interviewer digs, that is where the
+> second and third layer of detail lives. Anything tagged `[to-confirm]` there must not be stated as
+> fact here either.
 
 ### 1. [PROJECT_NAME] ([SKILL_DEMONSTRATED])
 **S:** [CONTEXT - what was happening, what was the problem]

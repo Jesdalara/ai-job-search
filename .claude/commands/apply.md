@@ -97,7 +97,7 @@ That second test is the one that does the work. **People remember tools accurate
 
 ### Capturing what comes back
 
-**Apply the Standing Rule above right away** — write the fact into `01-candidate-profile.md`, in the right section, in the same turn. Do not leave it living only in this conversation or bolted onto the end of a draft.
+**Route it through `/recall`** (`.claude/commands/recall.md`), and follow that procedure fully — placement in the right section, provenance tag, contradiction surfacing, and the `Do NOT say` row when a fact reveals an older claim was wrong. This is the Standing Rule above applied to a role-detail fact specifically: it belongs in `experience/`, not appended to `01-candidate-profile.md` directly. Do not leave it living only in this conversation or bolted onto the end of a draft.
 
 Three rules specific to this step:
 

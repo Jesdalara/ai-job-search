@@ -33,8 +33,12 @@ detail behind it. Both are sources of truth; they must not contradict each other
 
 ## Getting started
 
-1. Run `/setup`, or write role files by hand using the **File skeleton** below — one
-   `NN-<employer>-<role>.md` per role, most senior detail first.
+`/setup` does not populate this folder — it writes `01-candidate-profile.md` and the other summary
+files, but nothing in it currently generates an `experience/NN-*.md` file. These files are written by
+hand, or added later via `/recall`:
+
+1. Write role files using the **File skeleton** below — one `NN-<employer>-<role>.md` per role, most
+   senior detail first.
 2. Replace `INDEX.md`'s placeholder rows and keyword-router table with real entries pointing at your
    files and sections.
 3. From then on, use `/recall` to add a remembered fact without degrading the files — see
