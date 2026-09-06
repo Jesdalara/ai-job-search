@@ -1,5 +1,5 @@
 ---
-framework_version: 1.4.3
+framework_version: 1.4.4
 ---
 
 # CV Templates and Tailoring Guide
@@ -113,6 +113,20 @@ The `\renewcommand*` on `\namefont` and the three `\colorlet` lines in the pream
 Two related patterns are fine and should be kept:
 - `\vspace{1pt}` immediately after `\section{...}` (between section heading and first item) - this is between the heading and the list, not between list items.
 - `\vspace{3pt}` between top-level `\cventry` blocks in Professional Experience or Education - this gives breathing room between roles and renders consistently.
+
+### CV language: profile default, with one exception
+
+The CV language is a **profile-level choice** (`CV language:` in the candidate profile's Identity section), not a per-posting one. Holding it steady keeps CVs consistent and reusable, and it is the right default.
+
+**The exception, and it is narrow.** Switch to the posting's language when **both** hold:
+- the posting is written entirely in a language the candidate speaks at working level or better, **and**
+- the employer's whole recruitment surface is in that language too - the application form, the portal, the screening questions. A posting merely *translated* into another language on an otherwise English ATS does not qualify; the surface is the tell.
+
+**The reason to break the default there is concrete: ATS keyword matching is often literal.** A posting's required terms are written in the posting's own language, and a CV drafted in another language matches them only as synonyms or via translation - which a literal parser scores as zero. A CV kept in the posting's language covers its required terms verbatim; a translated CV covers the same concepts, but not the same strings.
+
+**When you switch, it is a SWITCH, not an addition. Never submit two CVs to one application.** Two versions of the same document create a "which one is real" problem for the reader, double the factual-consistency surface the verification checklist has to hold, and filing the localised one as an *additional* attachment marks it as secondary when it is in fact the more appropriate document for that application. Keep the other language's version in `cv/` as a reference and submit exactly one.
+
+Translate the section headings too - see immediately below, which is the half most often forgotten.
 
 ### Section headings must match the CV's language (important)
 
