@@ -1,5 +1,5 @@
 ---
-framework_version: 1.2.6
+framework_version: 1.2.7
 ---
 
 # Job Evaluation Framework
@@ -111,10 +111,31 @@ Does this role advance career goals and contain tasks that energize?
 - [YOUR_CAREER_GOAL_2]
 - [YOUR_CAREER_GOAL_3]
 
+**Career-alignment lanes.** Score career alignment by naming the lane a posting falls into, rather
+than judging it fresh each time. During `/setup`, define your own lanes ordered by preference, each
+with a `career` score band - for example a primary lane you're actively targeting, one or two secondary
+lanes you'd still take, and a lane you'd rather avoid. Modifiers apply to any lane and are additive to
+that lane's band:
+
+- **A modifier never promotes a lane.** A role in a secondary lane with an attractive modifier is still
+  a role in a secondary lane. Modifiers adjust within a lane; they do not reorder lanes.
+- **Watch for modifier inflation.** A modifier discriminates only while it stays scarce. Track how
+  often it appears across scraped postings and retire it as a modifier once it reaches most of them -
+  it has become a checkbox, and scoring it as rare inflates every posting that prints it.
+- A posting combining two of the candidate's directions is rarer and more valuable than one that
+  matches a single direction perfectly.
+
 **Motivation filter:** Evaluate not just whether you *can* do the tasks, but whether the tasks will *energize* you. Consider:
 - Tasks that energize: [YOUR_ENERGIZING_TASKS]
 - Tasks that drain: [YOUR_DRAINING_TASKS]
 - Non-task factors: leadership style, department culture, company values, degree of autonomy
+
+**Self-assessment filter - apply it to *which* gap sits at the role's centre, not to how many gaps
+there are.** A posting where a weak area is a **growth track** passes; a posting where the same weak
+area is **the thing the role is hired to lead** does not. This is not general gap-intolerance and not
+risk aversion: the same candidate can rate one gap as fast to learn and decline another in the same
+technology, depending on whether the role's centre of gravity sits on it. Flag it explicitly when
+scoring rather than folding it into the Technical Skills number.
 
 **Life situation alignment:** Consider personal constraints:
 - **Security**: [YOUR_FINANCIAL_SITUATION_CONTEXT]
