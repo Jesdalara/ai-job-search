@@ -117,7 +117,8 @@ site for the role and store that URL instead, or drop the candidate rather than 
 fragment link.
 
 For every candidate:
-- Skip if the URL or company+title combo already exists in `seen_jobs.json`
+- Skip if the URL already exists in `seen_jobs.json`
+- **Do NOT skip on company+title.** That rule is wrong in both directions and cost real roles — see "Collapsing genuine duplicates" in Step 4. Same company and same title is a *candidate* for collapsing, decided by the description hash, never by the title alone
 - Skip if the company+role already appears in `job_search_tracker.csv`
 
 ### Step 2.5: Mass-Posting Detection (within this run)
@@ -162,13 +163,40 @@ The `portal` field records which CLI skill produced the job (results are already
 
 The `source` field records which mechanism produced the entry: `cli` for Step 1b portal-CLI output, `websearch` for the Step 1c fallback. This is what keeps a ghost-job report diagnosable after the run's summary is gone: a stored entry whose URL later resolves to nothing (or to a different job) reads very differently depending on whether it came from live CLI output or from a search index that can be weeks stale - and a presented job with no entry here at all points at fabrication, which Rule 1 forbids. Entries written before this field existed lack it; never backfill it - the mechanism was not recorded.
 
-`/rank` extends this schema additively: ranked entries also carry `rank_score` (0–100 overall score), `rank_verdict` (fit band, e.g. "strong fit"), `rank_date` (ISO date of ranking), the veto fields `location_verdict` and `language_gate` (both PASS/FAIL/FLAG) with `language_note` (the quoted requirement explaining a non-PASS), and `strengths`/`gaps` (1-3 verbatim bullets each, copied from the scoring agent's findings). The `status` field is set to `"ranked"`. Do not drop any of these fields when re-writing entries. Entries ranked before `strengths`/`gaps` existed simply lack them; readers tolerate their absence and never backfill by guessing. Entries ranked before the verdict rename may carry a legacy PASS/FAIL/FLAG string in `location` - read that as the verdict when `location_verdict` is absent; in fresh entries `location` is always a place, never a verdict.
+`/rank` extends this schema additively, and writes it via `tools/rankmerge.py` rather than by hand. Ranked entries carry `rank_score` (0–100 overall), `rank_verdict` (fit band), `rank_date`, **`rubric`** (the `framework_version` the score was produced under), the veto fields `location_verdict` and `language_gate` (both PASS/FAIL/FLAG) with `language_note` (the quoted requirement explaining a non-PASS), `strengths`/`gaps` (1-3 verbatim bullets each), and the four decision fields **`visa`**, **`portfolio_required`**, **`still_open`** and **`band`**. The `status` field becomes `"ranked"`. Do not drop any of these when re-writing entries; entries predating a field simply lack it, readers tolerate their absence, and never backfill by guessing. Entries ranked before the verdict rename may carry a legacy PASS/FAIL/FLAG string in `location` - read that as the verdict when `location_verdict` is absent; in fresh entries `location` is always a place, never a verdict.
+
+Two of those deserve emphasis because their absence is silently misleading:
+
+- **`rubric`.** Scores from different framework versions are not comparable — measured drift was +6/+8/+9 on byte-identical descriptions. **An entry with no `rubric` is not comparable to anything** and must be treated as unranked rather than as a low score.
+- **`status: "unknown"`.** Distinct from `expired`, and never to be collapsed into it. `expired` asserts the posting is gone; `unknown` records that retrieval failed and the question is still open. A batch where *every* fetch failed is a throttling signal, not a finding — `rankmerge.py` refuses to write one.
 
 `deadline` is a base field rather than a `/rank` extension: Step 2's detail fetch already extracts the application deadline, so it is written when the job is first seen and refreshed by `/rank` Step 4 when a scoring agent returns a different value. `null` means the posting states no deadline; a missing key means the entry predates this field - **never infer a deadline** from either, and never backfill by guessing.
 
 `posted_date` is the posting's own publication date, taken from the `date` field Step 2's contract already guarantees on every portal CLI's search output. Step 1b uses that date to scope the run to the last 14 days and then drops it, so nothing downstream can distinguish a posting published yesterday from one published two years ago - `first_seen` is when this scraper first saw the entry, not when the employer posted it. Persisting it makes Step 1b's window auditable after the run and gives `/rank` a freshness signal to weigh, instead of rediscovering the date and recording it in prose that nothing reads. That gap landed for real: a freehire-search posting dated 2024-05-13 was scraped and ranked Strong Fit at position 1 of 133, its own scoring note observing the listing "may be long stale" with nothing able to act on it. `null` means the portal returned no date for that result (the CLIs emit `date: null` when a listing omits it); a missing key means the entry predates this field - **never infer a posting date** from either, and never backfill by guessing.
 
 2. Only present jobs NOT already in the seen list or tracker.
+
+### Collapsing genuine duplicates — hash the description, never the title
+
+Large employers post one requisition once per city. Those are genuine duplicates and should collapse. Two postings that merely share a company and a title usually are not, and collapsing them loses roles.
+
+Both errors were measured in Aug 2026 by fetching and hashing the description bodies:
+
+| Case | Signal |
+|---|---|
+| Same company and title, two cities | Identical MD5, 3,335 characters both → **one requisition** |
+| Same company and title, two cities | 5,087 vs 3,869 characters, different MD5 → **two distinct postings** |
+
+Cases like the first row are exactly what a company+title check is meant to catch — but the second row shares the same company and title too, and collapsing it would have deleted a distinct, live posting. A company+title heuristic cannot tell these two cases apart from the search results alone; only the description hash can.
+
+**The rule:**
+- Same description hash → one requisition seen from several places. Keep one entry, record a `locations` list on the survivor and `merged_duplicate_of` on what was folded in.
+- Different hash → distinct postings. **Keep both.**
+- Never dedup on company+title alone, and never on title similarity.
+
+**Cost control, because hashing needs a `detail` fetch.** Only hash *candidate groups*: entries sharing a company and a normalised title. In a 195-entry corpus that was **7 groups / 14 fetches**, not 195. Groups of one are never fetched. And the fetch cadence rules in `/rank` Step 2 apply here too — a throttled batch of hash fetches will produce identical empty bodies, which hash identically and would collapse everything. **If a hash batch returns empty or identical-length bodies for an entire group, discard the batch and retry spaced out; do not merge on it.**
+
+One requisition can also surface from two different portals with different URLs — an employer's own careers site and a general aggregator, in one measured case with identical bodies. Apply once, and prefer the employer's own posting as the canonical entry: aggregators drop the requisition ID, the department and often the employment type, and in that measured case the two sources actively contradicted each other on employment type.
 
 ### Step 4.5: Generate Referral Contact Links (High & Medium Fit Only)
 
